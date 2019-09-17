@@ -1,14 +1,12 @@
-package com.example.pradhuman.othello;
+package com.example.kushal.othello;
 
 import android.content.Context;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 /**
  * Created by Pradhuman on 19-06-2017.
  */
 
-public class MyButton extends ImageButton{
+public class MyButton extends android.support.v7.widget.AppCompatImageButton{
 
     private boolean isBlack;
     private int x;

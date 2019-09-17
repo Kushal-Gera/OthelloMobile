@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#b26827"
+    android:background="#E1F5FE"
     android:orientation="vertical"
-    tools:context="com.example.pradhuman.othello.MainActivity">
+    tools:context="com.example.kushal.othello.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,36 +16,36 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:background="#b26827"
+            android:background="#FF9800"
             android:id="@+id/image_black"
             android:scaleType="fitCenter"/>
 
         <Button
             android:id="@+id/blackCount"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/colorAccent"
             android:background="@android:color/black"
-            android:textSize="25dp"/>
+            android:textSize="25sp"/>
 
         <ImageButton
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:background="#b26827"
+            android:background="#FF9800"
             android:id="@+id/image_white"
             android:scaleType="fitCenter" />
 
         <Button
             android:id="@+id/whiteCount"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:background="@android:color/white"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="25dp"
-            />
+            android:textColor="@color/colorAccent"
+            android:textSize="25dp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -56,4 +55,5 @@
         android:orientation="vertical">
 
     </LinearLayout>
+
 </LinearLayout>

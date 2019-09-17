@@ -1,4 +1,4 @@
-package com.example.pradhuman.othello;
+package com.example.kushal.othello;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

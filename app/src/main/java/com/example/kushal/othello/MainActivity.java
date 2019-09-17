@@ -1,7 +1,8 @@
-package com.example.pradhuman.othello;
+package com.example.kushal.othello;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,21 +38,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         blackTurn = true;
         b_c = w_c  = 2;
         Intent i = getIntent();
-        String name = i.getStringExtra("player1");
-        String name2 = i.getStringExtra("player2");
-        Toast.makeText(this, "Welcome " + name + " & " + name2, Toast.LENGTH_SHORT).show();
-        mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
-        blackCount = (Button) findViewById(R.id.blackCount);
-        whiteCount = (Button) findViewById(R.id.whiteCount);
-        imageBlack = (ImageButton) findViewById(R.id.image_black);
-        imageWhite = (ImageButton) findViewById(R.id.image_white);
+        mainLayout = findViewById(R.id.mainLayout);
+        blackCount = findViewById(R.id.blackCount);
+        whiteCount = findViewById(R.id.whiteCount);
+        imageBlack = findViewById(R.id.image_black);
+        imageWhite = findViewById(R.id.image_white);
         createGrid();
         updateBoard();
         blackCount.setText(b_c+"");
         whiteCount.setText(w_c+"");
         if(blackTurn)
         {
-            imageWhite.setImageResource(R.drawable.tr);
+            imageWhite.setImageResource(R.drawable.white);
             imageBlack.setImageResource(R.drawable.black);
         }
 
@@ -68,14 +66,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         if(id==R.id.newGame)
         {
-            restarty();
-            Log.e("restrat","yo");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Do you really want to REPLAY ?")
+                    .setMessage("All progress will be LOST !")
+                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            restart();
+                            Toast.makeText(MainActivity.this, "Restarted", Toast.LENGTH_SHORT).show();
+                            Log.e("restart","yo");
+                        }
+                    })
+                    .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
-        Log.e("restrat","yo");
         return true;
     }
 
-    public void restarty() {
+    public void restart() {
         Log.e("restrat","yo");
         for(int i=0;i<8;i++)
         {
@@ -492,14 +506,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 gameOver = true;
                 if(b_c>w_c)
-                    Toast.makeText(this, "!!!Black Won!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Black Won", Toast.LENGTH_SHORT).show();
                 else if(w_c>b_c)
-                    Toast.makeText(this, "!!!White Won!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "White Won", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(this, "!!!Draw!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Draw", Toast.LENGTH_SHORT).show();
             }
             else
-                Toast.makeText(this, "PASS!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "PLEASE PASS", Toast.LENGTH_LONG).show();
         }
         if(blackTurn)
         {
@@ -512,6 +526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imageBlack.setImageResource(R.drawable.tr);
         }
     }
+
     public void checkBlack(int row,int col){
 
         int i,j,count;
@@ -686,7 +701,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             count--;
         }
     }
-    /*******************************************************************/
+
     public void checkWhite(int row, int col){
         int i,j,count;
         //UP

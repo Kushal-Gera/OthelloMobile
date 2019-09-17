@@ -1,4 +1,4 @@
-package com.example.pradhuman.othello;
+package com.example.kushal.othello;
 
 import org.junit.Test;
 
