@@ -23,8 +23,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayout[] rowLayout;
     private static boolean gameOver;
     private static boolean blackTurn;
+    private static boolean exit = false;
     int b_c;
     int w_c;
+
+    @Override
+    public void onBackPressed() {
+
+        if (exit){
+            super.onBackPressed();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Do you really want to QUIT ?")
+                .setMessage("All progress will be LOST !")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        exit = true;
+                        onBackPressed();
+                    }
+                })
+                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        exit = false;
+                        //do nothing
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        exit = false;
+
+    }
+
     int counter;
     Button blackCount;
     Button whiteCount;
