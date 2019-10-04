@@ -1,5 +1,7 @@
-package com.example.kushal.othello;
+package com.application.kushal.othello;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -27,43 +29,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int b_c;
     int w_c;
 
-    @Override
-    public void onBackPressed() {
-
-        if (exit){
-            super.onBackPressed();
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Do you really want to QUIT ?")
-                .setMessage("All progress will be LOST !")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        exit = true;
-                        onBackPressed();
-                    }
-                })
-                .setNegativeButton("no", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        exit = false;
-                        //do nothing
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        exit = false;
-
-    }
-
     int counter;
     Button blackCount;
     Button whiteCount;
     ImageButton imageBlack;
     ImageButton imageWhite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setNegativeButton("no", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-
+                            //do nothing
                         }
                     });
             AlertDialog dialog = builder.create();
@@ -539,12 +510,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (counter == 0)
             {
                 gameOver = true;
-                if(b_c>w_c)
-                    Toast.makeText(this, "Black Won", Toast.LENGTH_SHORT).show();
-                else if(w_c>b_c)
-                    Toast.makeText(this, "White Won", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, "Draw", Toast.LENGTH_SHORT).show();
+                String s;
+                if(b_c>w_c){
+                    Toast.makeText(this, "Black Won", Toast.LENGTH_LONG).show();    s = "Black";
+                }
+                else if(w_c>b_c){
+                    Toast.makeText(this, "White Won", Toast.LENGTH_LONG).show();    s = "White";
+                }
+                else{
+                    Toast.makeText(this, "Draw", Toast.LENGTH_LONG).show(); s = "Tie\nNo one";
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(s + " Won the Game")
+                        .setMessage("Game Ends Here !")
+                        .setCancelable(false)
+                        .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //restart the game
+                                restart();
+                            }
+                        })
+                        .setNegativeButton("Review Game", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
             else
                 Toast.makeText(this, "PLEASE PASS", Toast.LENGTH_LONG).show();
@@ -909,4 +905,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             count--;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+        if (exit){
+            super.onBackPressed();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Do you really want to QUIT ?")
+                .setMessage("All progress will be LOST !")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        exit = true;
+                        onBackPressed();
+                    }
+                })
+                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        exit = false;
+                        //do nothing
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        exit = false;
+
+    }
+
+
+
 }

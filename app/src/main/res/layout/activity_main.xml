@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#E1F5FE"
     android:orientation="vertical"
-    tools:context="com.example.kushal.othello.MainActivity">
+    tools:context="com.application.kushal.othello.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

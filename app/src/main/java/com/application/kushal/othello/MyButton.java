@@ -1,4 +1,4 @@
-package com.example.kushal.othello;
+package com.application.kushal.othello;
 
 import android.content.Context;
 
