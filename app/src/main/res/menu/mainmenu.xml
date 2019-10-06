@@ -4,11 +4,11 @@
 
     <item
         android:id="@+id/autoPlay"
-        android:title="Auto Play"
-        app:showAsAction="always" />
+        android:title="1 Player"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/newGame"
         android:title="New Game"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

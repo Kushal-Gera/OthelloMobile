@@ -19,8 +19,12 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int b_c;
     int w_c;
 
+    private boolean AUTO_PLAY;
+    private ArrayList<MyButton> buttonArrayList = new ArrayList<>();
+    ProgressBar progressBar;
+
     int counter;
     Button blackCount;
     Button whiteCount;
@@ -43,7 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         gameOver = false;
+        AUTO_PLAY = false;
         blackTurn = true;
         b_c = w_c  = 2;
         Intent i = getIntent();
@@ -61,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imageWhite.setImageResource(R.drawable.white);
             imageBlack.setImageResource(R.drawable.black);
         }
-
+        progressBar = findViewById(R.id.progressBar);
 
     }
 
@@ -81,9 +91,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            restart();
+                            startActivity(new Intent(MainActivity.this, MainActivity.class));
                             Toast.makeText(MainActivity.this, "Restarted", Toast.LENGTH_SHORT).show();
-                            Log.e("restart","yo");
+                            finish();
                         }
                     })
                     .setNegativeButton("no", new DialogInterface.OnClickListener() {
@@ -97,45 +107,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (id == R.id.autoPlay){
             Toast.makeText(this, "<auto play is true>", Toast.LENGTH_SHORT).show();
+            item.setVisible(false);
+            AUTO_PLAY = true;
         }
         return true;
-    }
-
-    public void restart() {
-        Log.e("restrat","yo");
-        for(int i=0;i<8;i++)
-        {
-            for(int j=0;j<8;j++){
-                grid[i][j].setBlack(false);
-                grid[i][j].setClicked(false);
-                grid[i][j].setCanClicked(false);
-                grid[i][j].setBackgroundResource(R.drawable.rect);
-                grid[i][j].setImageResource(R.drawable.tr);
-                if ((i == 3 && j == 3) || (i == 4 && j == 4)) {
-                    grid[i][j].setClicked(true);
-                    grid[i][j].setBlack(false);
-                    grid[i][j].setImageResource(R.drawable.white);
-                }
-                if ((i == 4 && j == 3) || (i == 3 && j == 4)) {
-                    grid[i][j].setClicked(true);
-                    grid[i][j].setImageResource(R.drawable.black);
-                    grid[i][j].setBlack(true);
-                }
-            }
-
-        }
-        updateBoard();
-        gameOver = false;
-        blackTurn = true;
-        b_c = w_c  = 2;
-        if(blackTurn)
-        {
-            imageWhite.setImageResource(R.drawable.tr);
-            imageBlack.setImageResource(R.drawable.black);
-        }
-        blackCount.setText(b_c+"");
-        whiteCount.setText(w_c+"");
-
     }
 
     public void createGrid() {
@@ -472,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (flag) {
                     grid[olc][ilc].setCanClicked(true);
+                    buttonArrayList.add(grid[olc][ilc]);
                     grid[olc][ilc].setImageResource(R.drawable.greyy);
                     counter++;
                 } else {
@@ -493,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button.setBlack(true);
             button.setClicked(true);
             button.setImageResource(R.drawable.black);
+            buttonArrayList.clear();
             b_c++;
         } else {
             button.setImageResource(R.drawable.white);
@@ -501,21 +478,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             w_c++;
         }
         //Flip
-        if(blackTurn){
+        if(blackTurn)
             checkBlack(button.getAtX(),button.getAtY());
-        }
         else
             checkWhite(button.getAtX(),button.getAtY());
+
         button.setClicked(true);
         blackCount.setText(b_c+"");
         whiteCount.setText(w_c+"");
         blackTurn = !blackTurn;
         updateBoard();
+        //for auto play stuff
+        if (AUTO_PLAY && !blackTurn){
+            progressBar.setVisibility(View.VISIBLE);
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    if (buttonArrayList.size()!=0){
+                        int r = new Random().nextInt(buttonArrayList.size());
+                        buttonArrayList.get(r).performClick();
+
+                        buttonArrayList.clear();
+                    }
+                }
+            }, 500);
+        }
+
         if (counter == 0) {
             blackTurn = !blackTurn;
             updateBoard();
-            if (counter == 0)
-            {
+            if (counter == 0) {
                 gameOver = true;
                 final String s;
 
@@ -532,30 +526,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void run() {
                         final Dialog dialog = new Dialog(MainActivity.this);
                         dialog.setContentView(R.layout.sucess_dialog);
+                        dialog.setCancelable(false);
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog.show();
 
                         TextView title = dialog.findViewById(R.id.main_title);
                         title.setText(s);
 
-                        dialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) { dialog.dismiss(); }});
                         dialog.findViewById(R.id.review).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) { dialog.dismiss(); }});
                         dialog.findViewById(R.id.replay).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View v) { restart(); dialog.dismiss(); }});
+                            public void onClick(View v) {
+                                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                                finish();
+                                dialog.dismiss(); }
+                        });
 
                     }
-                },200);
+                },400);
 
 
             }
             else
                 Toast.makeText(this, "PLEASE PASS", Toast.LENGTH_LONG).show();
         }
+
         if(blackTurn)
         {
             imageWhite.setImageResource(R.drawable.tr);

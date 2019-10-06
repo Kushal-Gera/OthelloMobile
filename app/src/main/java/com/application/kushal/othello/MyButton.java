@@ -2,10 +2,6 @@ package com.application.kushal.othello;
 
 import android.content.Context;
 
-/**
- * Created by Pradhuman on 19-06-2017.
- */
-
 public class MyButton extends android.support.v7.widget.AppCompatImageButton{
 
     private boolean isBlack;
