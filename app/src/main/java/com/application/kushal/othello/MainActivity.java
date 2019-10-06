@@ -4,6 +4,9 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imageBlack.setImageResource(R.drawable.black);
         }
 
+
     }
 
     @Override
@@ -69,8 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id==R.id.newGame)
-        {
+        if(id==R.id.newGame) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Do you really want to REPLAY ?")
                     .setMessage("All progress will be LOST !")
@@ -90,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     });
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+        if (id == R.id.autoPlay){
+            Toast.makeText(this, "<auto play is true>", Toast.LENGTH_SHORT).show();
         }
         return true;
     }
@@ -510,36 +517,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (counter == 0)
             {
                 gameOver = true;
-                String s;
-                if(b_c>w_c){
-                    Toast.makeText(this, "Black Won", Toast.LENGTH_LONG).show();    s = "Black";
-                }
-                else if(w_c>b_c){
-                    Toast.makeText(this, "White Won", Toast.LENGTH_LONG).show();    s = "White";
-                }
-                else{
-                    Toast.makeText(this, "Draw", Toast.LENGTH_LONG).show(); s = "Tie\nNo one";
-                }
+                final String s;
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(s + " Won the Game")
-                        .setMessage("Game Ends Here !")
-                        .setCancelable(false)
-                        .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                if(b_c>w_c)
+                    s = "Black Won This Game";
+                else if(w_c>b_c)
+                    s = "White Won This Game";
+                else
+                    s = "It's A Draw";
+
+                Handler h = new Handler();
+                h.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Dialog dialog = new Dialog(MainActivity.this);
+                        dialog.setContentView(R.layout.sucess_dialog);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+
+                        TextView title = dialog.findViewById(R.id.main_title);
+                        title.setText(s);
+
+                        dialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //restart the game
-                                restart();
-                            }
-                        })
-                        .setNegativeButton("Review Game", new DialogInterface.OnClickListener() {
+                            public void onClick(View v) { dialog.dismiss(); }});
+                        dialog.findViewById(R.id.review).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //do nothing
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                            public void onClick(View v) { dialog.dismiss(); }});
+                        dialog.findViewById(R.id.replay).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) { restart(); dialog.dismiss(); }});
+
+                    }
+                },200);
+
 
             }
             else

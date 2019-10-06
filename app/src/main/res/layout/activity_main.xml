@@ -18,12 +18,14 @@
             android:layout_weight="1"
             android:background="#FF9800"
             android:id="@+id/image_black"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/descriptions" />
 
         <Button
             android:id="@+id/blackCount"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="-2dp"
             android:layout_weight="1"
             android:textColor="@color/colorAccent"
             android:background="@android:color/black"
@@ -35,7 +37,8 @@
             android:layout_weight="1"
             android:background="#FF9800"
             android:id="@+id/image_white"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/descriptions" />
 
         <Button
             android:id="@+id/whiteCount"

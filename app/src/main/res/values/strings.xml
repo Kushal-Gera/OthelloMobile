@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Othello Mobile</string>
+    <string name="descriptions">descriptions</string>
+    <string name="game_ends_here">Game Ends Here !!</string>
+    <string name="replay">Replay</string>
+    <string name="review">Review</string>
 </resources>
