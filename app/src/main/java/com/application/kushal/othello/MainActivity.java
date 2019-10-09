@@ -1,7 +1,6 @@
 package com.application.kushal.othello;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int b_c;
     int w_c;
 
-    private boolean AUTO_PLAY;
+    private boolean ONE_PLAYER;
     private ArrayList<MyButton> buttonArrayList = new ArrayList<>();
     ProgressBar progressBar;
 
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         gameOver = false;
-        AUTO_PLAY = false;
+        ONE_PLAYER = false;
         blackTurn = true;
         b_c = w_c  = 2;
         Intent i = getIntent();
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == R.id.autoPlay){
             Toast.makeText(this, "<auto play is true>", Toast.LENGTH_SHORT).show();
             item.setVisible(false);
-            AUTO_PLAY = true;
+            ONE_PLAYER = true;
         }
         return true;
     }
@@ -488,8 +487,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         whiteCount.setText(w_c+"");
         blackTurn = !blackTurn;
         updateBoard();
-        //for auto play stuff
-        if (AUTO_PLAY && !blackTurn){
+//=>        for auto play stuff
+        if (ONE_PLAYER && !blackTurn){
             progressBar.setVisibility(View.VISIBLE);
             Handler h = new Handler();
             h.postDelayed(new Runnable() {
