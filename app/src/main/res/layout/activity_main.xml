@@ -13,13 +13,13 @@
         android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/image_black"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#FF9800"
-            android:id="@+id/image_black"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/descriptions" />
+            android:contentDescription="@string/descriptions"
+            android:scaleType="fitCenter" />
 
         <Button
             android:id="@+id/blackCount"
@@ -27,18 +27,18 @@
             android:layout_height="52dp"
             android:layout_marginTop="-2dp"
             android:layout_weight="1"
-            android:textColor="@color/colorAccent"
             android:background="@android:color/black"
-            android:textSize="25sp"/>
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp" />
 
         <ImageButton
+            android:id="@+id/image_white"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#FF9800"
-            android:id="@+id/image_white"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/descriptions" />
+            android:contentDescription="@string/descriptions"
+            android:scaleType="fitCenter" />
 
         <Button
             android:id="@+id/whiteCount"
@@ -62,9 +62,9 @@
         android:visibility="invisible" />
 
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mainLayout"
         android:orientation="vertical">
 
     </LinearLayout>

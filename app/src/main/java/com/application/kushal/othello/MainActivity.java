@@ -5,10 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameOver = false;
         ONE_PLAYER = false;
         blackTurn = true;
-        b_c = w_c  = 2;
+        b_c = w_c = 2;
         Intent i = getIntent();
         mainLayout = findViewById(R.id.mainLayout);
         blackCount = findViewById(R.id.blackCount);
@@ -63,27 +63,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageWhite = findViewById(R.id.image_white);
         createGrid();
         updateBoard();
-        blackCount.setText(b_c+"");
-        whiteCount.setText(w_c+"");
-        if(blackTurn)
-        {
-            imageWhite.setImageResource(R.drawable.white);
-            imageBlack.setImageResource(R.drawable.black);
-        }
+        blackCount.setText(b_c + "");
+        whiteCount.setText(w_c + "");
+        imageBlack.setImageResource(R.drawable.black);
         progressBar = findViewById(R.id.progressBar);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mainmenu,menu);
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id==R.id.newGame) {
+        if (id == R.id.newGame) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Do you really want to REPLAY ?")
                     .setMessage("All progress will be LOST !")
@@ -104,8 +100,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        if (id == R.id.autoPlay){
-            Toast.makeText(this, "<auto play is true>", Toast.LENGTH_SHORT).show();
+        if (id == R.id.autoPlay) {
+            Toast.makeText(this, "<Single Player Mode>", Toast.LENGTH_SHORT).show();
             item.setVisible(false);
             ONE_PLAYER = true;
         }
@@ -477,25 +473,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             w_c++;
         }
         //Flip
-        if(blackTurn)
-            checkBlack(button.getAtX(),button.getAtY());
+        if (blackTurn)
+            checkBlack(button.getAtX(), button.getAtY());
         else
-            checkWhite(button.getAtX(),button.getAtY());
+            checkWhite(button.getAtX(), button.getAtY());
 
         button.setClicked(true);
-        blackCount.setText(b_c+"");
-        whiteCount.setText(w_c+"");
+        blackCount.setText(b_c + "");
+        whiteCount.setText(w_c + "");
         blackTurn = !blackTurn;
         updateBoard();
 //=>        for auto play stuff
-        if (ONE_PLAYER && !blackTurn){
+        if (ONE_PLAYER && !blackTurn) {
             progressBar.setVisibility(View.VISIBLE);
             Handler h = new Handler();
             h.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.INVISIBLE);
-                    if (buttonArrayList.size()!=0){
+                    if (buttonArrayList.size() != 0) {
                         int r = new Random().nextInt(buttonArrayList.size());
                         buttonArrayList.get(r).performClick();
 
@@ -512,9 +508,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 gameOver = true;
                 final String s;
 
-                if(b_c>w_c)
+                if (b_c > w_c)
                     s = "Black Won This Game";
-                else if(w_c>b_c)
+                else if (w_c > b_c)
                     s = "White Won This Game";
                 else
                     s = "It's A Draw";
@@ -534,381 +530,347 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         dialog.findViewById(R.id.review).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View v) { dialog.dismiss(); }});
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                for (int i = 0; i < 8; i++) {
+                                    for (int j = 0; j < 8; j++) {
+                                        grid[i][j].setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                dialog.show();
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
                         dialog.findViewById(R.id.replay).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 startActivity(new Intent(MainActivity.this, MainActivity.class));
                                 finish();
-                                dialog.dismiss(); }
+                                dialog.dismiss();
+                            }
                         });
 
                     }
-                },400);
+                }, 400);
 
 
-            }
-            else
+            } else
                 Toast.makeText(this, "PLEASE PASS", Toast.LENGTH_LONG).show();
         }
 
-        if(blackTurn)
-        {
+        if (blackTurn) {
             imageWhite.setImageResource(R.drawable.tr);
             imageBlack.setImageResource(R.drawable.black);
-        }
-        else
-        {
+        } else {
             imageWhite.setImageResource(R.drawable.white);
             imageBlack.setImageResource(R.drawable.tr);
         }
     }
 
-    public void checkBlack(int row,int col){
+    public void checkBlack(int row, int col) {
 
-        int i,j,count;
+        int i, j, count;
         //UP
-        i = row-1;
+        i = row - 1;
         j = col;
         count = 0;
-        while(i>=0&&grid[i][j].getClicked()&&!grid[i][j].getBlack()) {
+        while (i >= 0 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             count++;
             i--;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row-count][col].setImageResource(R.drawable.black);
-            grid[row-count][col].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row - count][col].setImageResource(R.drawable.black);
+            grid[row - count][col].setBlack(true);
             count--;
         }
         //Down
-        i = row+1;
+        i = row + 1;
         j = col;
         count = 0;
-        while(i<8&&grid[i][j].getClicked()&&!grid[i][j].getBlack()) {
+        while (i < 8 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             count++;
             i++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row+count][col].setImageResource(R.drawable.black);
-            grid[row+count][col].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row + count][col].setImageResource(R.drawable.black);
+            grid[row + count][col].setBlack(true);
             count--;
         }
         //Left
         i = row;
-        j = col-1;
+        j = col - 1;
         count = 0;
-        while(j>=0&&grid[i][j].getClicked()&&!grid[i][j].getBlack())
-        {
+        while (j >= 0 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             j--;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row][col-count].setImageResource(R.drawable.black);
-            grid[row][col-count].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row][col - count].setImageResource(R.drawable.black);
+            grid[row][col - count].setBlack(true);
             count--;
         }
         //Right
         i = row;
-        j = col+1;
+        j = col + 1;
         count = 0;
-        while(j<8&&grid[i][j].getClicked()&&!grid[i][j].getBlack())
-        {
+        while (j < 8 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             j++;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row][col+count].setImageResource(R.drawable.black);
-            grid[row][col+count].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row][col + count].setImageResource(R.drawable.black);
+            grid[row][col + count].setBlack(true);
             count--;
         }
         //Up_Right
-        i = row-1;
-        j = col+1;
+        i = row - 1;
+        j = col + 1;
         count = 0;
-        while(j<8&&i>=0&&grid[i][j].getClicked()&&!grid[i][j].getBlack())
-        {
+        while (j < 8 && i >= 0 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             j++;
             i--;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row-count][col+count].setImageResource(R.drawable.black);
-            grid[row-count][col+count].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row - count][col + count].setImageResource(R.drawable.black);
+            grid[row - count][col + count].setBlack(true);
             count--;
         }
         //up_left
-        i = row-1;
-        j = col-1;
+        i = row - 1;
+        j = col - 1;
         count = 0;
-        while(j>=0&&i>=0&&grid[i][j].getClicked()&&!grid[i][j].getBlack())
-        {
+        while (j >= 0 && i >= 0 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             j--;
             i--;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row-count][col-count].setImageResource(R.drawable.black);
-            grid[row-count][col-count].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row - count][col - count].setImageResource(R.drawable.black);
+            grid[row - count][col - count].setBlack(true);
             count--;
         }
         //down_left
-        i = row+1;
-        j = col-1;
+        i = row + 1;
+        j = col - 1;
         count = 0;
-        while(j>=0&&i<8&&grid[i][j].getClicked()&&!grid[i][j].getBlack())
-        {
+        while (j >= 0 && i < 8 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             j--;
             i++;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row+count][col-count].setImageResource(R.drawable.black);
-            grid[row+count][col-count].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row + count][col - count].setImageResource(R.drawable.black);
+            grid[row + count][col - count].setBlack(true);
             count--;
         }
         //down_right
-        i = row+1;
-        j = col+1;
+        i = row + 1;
+        j = col + 1;
         count = 0;
-        while(j<8&&i<8&&grid[i][j].getClicked()&&!grid[i][j].getBlack())
-        {
+        while (j < 8 && i < 8 && grid[i][j].getClicked() && !grid[i][j].getBlack()) {
             j++;
             i++;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c+=count;
-        w_c-=count;
-        while(count>0)
-        {
-            grid[row+count][col+count].setImageResource(R.drawable.black);
-            grid[row+count][col+count].setBlack(true);
+        b_c += count;
+        w_c -= count;
+        while (count > 0) {
+            grid[row + count][col + count].setImageResource(R.drawable.black);
+            grid[row + count][col + count].setBlack(true);
             count--;
         }
     }
 
-    public void checkWhite(int row, int col){
-        int i,j,count;
+    public void checkWhite(int row, int col) {
+        int i, j, count;
         //UP
-        i = row-1;
+        i = row - 1;
         j = col;
         count = 0;
-        while(i>=0&&grid[i][j].getClicked()&&grid[i][j].getBlack()) {
+        while (i >= 0 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             count++;
             i--;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row-count][col].setImageResource(R.drawable.white);
-            grid[row-count][col].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row - count][col].setImageResource(R.drawable.white);
+            grid[row - count][col].setBlack(false);
             count--;
         }
         //Down
-        i = row+1;
+        i = row + 1;
         j = col;
         count = 0;
-        while(i<8&&grid[i][j].getClicked()&&grid[i][j].getBlack()) {
+        while (i < 8 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             count++;
             i++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row+count][col].setImageResource(R.drawable.white);
-            grid[row+count][col].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row + count][col].setImageResource(R.drawable.white);
+            grid[row + count][col].setBlack(false);
             count--;
         }
         //Left
         i = row;
-        j = col-1;
+        j = col - 1;
         count = 0;
-        while(j>=0&&grid[i][j].getClicked()&&grid[i][j].getBlack())
-        {
+        while (j >= 0 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             j--;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row][col-count].setImageResource(R.drawable.white);
-            grid[row][col-count].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row][col - count].setImageResource(R.drawable.white);
+            grid[row][col - count].setBlack(false);
             count--;
         }
         //Right
         i = row;
-        j = col+1;
+        j = col + 1;
         count = 0;
-        while(j<8&&grid[i][j].getClicked()&&grid[i][j].getBlack())
-        {
+        while (j < 8 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             j++;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row][col+count].setImageResource(R.drawable.white);
-            grid[row][col+count].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row][col + count].setImageResource(R.drawable.white);
+            grid[row][col + count].setBlack(false);
             count--;
         }
         //Up_Right
-        i = row-1;
-        j = col+1;
+        i = row - 1;
+        j = col + 1;
         count = 0;
-        while(j<8&&i>=0&&grid[i][j].getClicked()&&grid[i][j].getBlack())
-        {
+        while (j < 8 && i >= 0 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             j++;
             i--;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row-count][col+count].setImageResource(R.drawable.white);
-            grid[row-count][col+count].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row - count][col + count].setImageResource(R.drawable.white);
+            grid[row - count][col + count].setBlack(false);
             count--;
         }
         //up_left
-        i = row-1;
-        j = col-1;
+        i = row - 1;
+        j = col - 1;
         count = 0;
-        while(j>=0&&i>=0&&grid[i][j].getClicked()&&grid[i][j].getBlack())
-        {
+        while (j >= 0 && i >= 0 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             j--;
             i--;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row-count][col-count].setImageResource(R.drawable.white);
-            grid[row-count][col-count].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row - count][col - count].setImageResource(R.drawable.white);
+            grid[row - count][col - count].setBlack(false);
             count--;
         }
         //down_left
-        i = row+1;
-        j = col-1;
+        i = row + 1;
+        j = col - 1;
         count = 0;
-        while(j>=0&&i<8&&grid[i][j].getClicked()&&grid[i][j].getBlack())
-        {
+        while (j >= 0 && i < 8 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             j--;
             i++;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row+count][col-count].setImageResource(R.drawable.white);
-            grid[row+count][col-count].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row + count][col - count].setImageResource(R.drawable.white);
+            grid[row + count][col - count].setBlack(false);
             count--;
         }
         //down_right
-        i = row+1;
-        j = col+1;
+        i = row + 1;
+        j = col + 1;
         count = 0;
-        while(j<8&&i<8&&grid[i][j].getClicked()&&grid[i][j].getBlack())
-        {
+        while (j < 8 && i < 8 && grid[i][j].getClicked() && grid[i][j].getBlack()) {
             j++;
             i++;
             count++;
         }
-        if((i>=0&&i<8&&j>=0&&j<8&&!grid[i][j].getClicked())||!(i>=0&&i<8&&j>=0&&j<8))
-        {
+        if ((i >= 0 && i < 8 && j >= 0 && j < 8 && !grid[i][j].getClicked()) || !(i >= 0 && i < 8 && j >= 0 && j < 8)) {
             count = 0;
         }
-        b_c-=count;
-        w_c+=count;
-        while(count>0)
-        {
-            grid[row+count][col+count].setImageResource(R.drawable.white);
-            grid[row+count][col+count].setBlack(false);
+        b_c -= count;
+        w_c += count;
+        while (count > 0) {
+            grid[row + count][col + count].setImageResource(R.drawable.white);
+            grid[row + count][col + count].setBlack(false);
             count--;
         }
     }
@@ -916,7 +878,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
 
-        if (exit){
+        if (exit) {
             super.onBackPressed();
             return;
         }
@@ -944,7 +906,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         exit = false;
 
     }
-
 
 
 }
